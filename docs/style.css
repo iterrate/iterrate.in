@@ -9,7 +9,7 @@
   color-scheme:light dark;
   /* colours (light) */
   --paper:#F6F3EA; --surface:#FFFDF8; --ink:#23272A; --muted:#565C5F; --rule:#DAD3C2;
-  --navbar:#E9E3D3; --navhover:#DDD5C1;
+  --navbar:#E9E3D3; --navhover:#DDD5C1; --current:#FFFDF8;
   --sky:#2B9AC8; --sky-text:#1C6E93; --leaf:#4E9A2E; --leaf-text:#3B7A22; --earth:#7A4E32;
   --leaf-soft:#E7F0DF;
   --band:#23272A; --band-text:#C9CBC6; --band-head:#EEEBE2; --band-leaf:#8CCB6A; --band-link:#8FD0EE;
@@ -26,19 +26,21 @@
   /* shape */
   --line:5px; --radius:10px;
 }
+/* Dark: a soft charcoal rather than near-black, so it is easier on the eyes; every text colour
+   still has a contrast of 4.6:1 or more against it. */
 @media (prefers-color-scheme:dark){
   :root{
-    --paper:#1B1F1D; --surface:#232826; --ink:#E9E6DD; --muted:#A9AEA9; --rule:#3A403C;
-    --navbar:#262B28; --navhover:#313733;
-    --sky:#4FB3E0; --sky-text:#7FC8EA; --leaf:#6CBF45; --leaf-text:#8CCB6A; --earth:#B9835C;
-    --leaf-soft:#26331F;
-    --band:#121513; --band-text:#C9CBC6; --band-head:#EEEBE2; --band-leaf:#8CCB6A; --band-link:#8FD0EE;
-    --on-accent:#1B1F1D;
+    --paper:#282D2A; --surface:#313633; --ink:#ECE9E0; --muted:#B4B9B4; --rule:#464C48;
+    --navbar:#313633; --navhover:#3B413D; --current:#454B47;
+    --sky:#4FB3E0; --sky-text:#8CCFEE; --leaf:#6CBF45; --leaf-text:#93D070; --earth:#C9946C;
+    --leaf-soft:#2F3A29;
+    --band:#1E2220; --band-text:#C9CBC6; --band-head:#EEEBE2; --band-leaf:#93D070; --band-link:#8CCFEE;
+    --on-accent:#282D2A;
   }
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--body)}
+body{margin:0;background:var(--paper);color:var(--ink);font:1.0625rem/1.65 var(--body)}
 img{max-width:100%}
 a{color:var(--sky-text);text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{color:var(--ink)}
@@ -60,7 +62,7 @@ a:hover{color:var(--ink)}
 .nav a{display:block;color:var(--ink);text-decoration:none;padding:6px 14px;border-radius:999px;position:relative;white-space:nowrap}
 .nav a:hover{background:var(--navhover)}
 .nav a:focus-visible{outline-offset:-2px}
-.nav a[aria-current="page"]{font-weight:600;background:var(--surface);box-shadow:0 1px 2px rgba(35,39,42,.12)}
+.nav a[aria-current="page"]{font-weight:600;background:var(--current);box-shadow:0 1px 2px rgba(35,39,42,.12)}
 .nav a[aria-current="page"]::after{content:"";position:absolute;left:14px;right:14px;bottom:3px;height:2px;background:var(--leaf);border-radius:2px}
 /* Narrow screens: the links stay on one row and the pill scrolls sideways. */
 @media (max-width:820px){
@@ -76,9 +78,13 @@ h1{font-size:var(--t-xxl);margin-bottom:18px}
 h1 em,h2 em{font-style:italic;font-weight:500}
 h2{font-size:var(--t-xl);margin-bottom:14px}
 h3{font-size:var(--t-l);margin-bottom:6px}
-p{margin:0 0 16px}
+p{margin:0 0 16px;text-wrap:pretty}
+h1,h2,h3,.band .big{text-wrap:balance}
 .lede{font-size:var(--t-m);color:var(--muted);max-width:58ch}
 .small{font-size:var(--t-s);color:var(--muted)}
+/* Addresses: one line per part on wider screens, wrapping freely on phones */
+.addr .line{display:block}
+@media (max-width:560px){.addr .line{display:inline}}
 
 /* Section heading mark: a short line ending in the logo's half arrowhead */
 .mark{display:inline-block;width:46px;height:14px;margin-bottom:10px;background:var(--leaf);
@@ -97,7 +103,8 @@ p{margin:0 0 16px}
 }
 @keyframes draw{to{stroke-dashoffset:0}}
 .hero h1{max-width:17ch;margin-bottom:22px}
-.hero .lede{margin-bottom:28px}
+.hero .lede{margin-bottom:10px}
+.hero .lede:last-of-type{margin-bottom:28px}
 .btns{display:flex;gap:12px;flex-wrap:wrap}
 .btn{display:inline-block;padding:11px 20px;border-radius:999px;text-decoration:none;font-weight:600;font-size:1rem;border:2px solid var(--ink);color:var(--ink)}
 .btn.primary{background:var(--ink);color:var(--paper)}
@@ -176,7 +183,7 @@ main > .band:last-child{margin-bottom:0}
   .site-foot ul{grid-column:1/-1;text-align:left;display:flex;gap:6px 18px;flex-wrap:wrap}
 }
 @media (max-width:560px){
-  body{font-size:16px}
+  body{font-size:1rem}
   .wrap{padding:0 20px}
   .hero{padding:56px 46px 70px 40px}
   dl.facts{grid-template-columns:1fr;gap:2px}
@@ -184,6 +191,16 @@ main > .band:last-child{margin-bottom:0}
   .principles li{grid-template-columns:44px 1fr}
   .principles li::before{font-size:var(--t-l)}
   .strip{grid-template-columns:1fr}
+}
+@media (max-width:400px){
+  .hero{padding:46px 40px 60px 32px}
+  .hero h1{font-size:2.1rem}
+  .hero .lede{font-size:1.05rem}
+}
+
+/* ---------- Windows high-contrast mode: keep the current page visible in the nav ---------- */
+@media (forced-colors:active){
+  .nav a[aria-current="page"]{outline:2px solid CanvasText;outline-offset:-4px}
 }
 
 /* ---------- print: black on white, no navigation, links spelt out ---------- */

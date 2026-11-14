@@ -6,6 +6,8 @@ Every page gets the same header, navigation and footer.
 """
 import datetime
 import hashlib
+import json
+import subprocess
 import re
 from pathlib import Path
 
@@ -14,7 +16,7 @@ BASE = "https://iterrate.in/"
 YEAR = datetime.date.today().year
 
 NAV = [
-    ("index.html", "Home"),
+    ("./", "Home"),
     ("saho.html", "Saho"),
     ("how-we-work.html", "How we work"),
     ("about.html", "About"),
@@ -23,8 +25,8 @@ NAV = [
     ("contact.html", "Contact"),
 ]
 
-HEAD = """<!doctype html>
-<html lang="en">
+HEAD = """<!DOCTYPE html>
+<html lang="en-IN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,19 +45,21 @@ HEAD = """<!doctype html>
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#F6F3EA" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1B1F1D" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#282D2A" media="(prefers-color-scheme: dark)">
+<meta name="darkreader-lock">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" href="iterrate-icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="preload" href="fonts/crimson-pro-latin.woff2" as="font" type="font/woff2" crossorigin>
+{extra_head}
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-head">
   <div class="wrap">
-    <a class="brand" href="index.html"><picture><source srcset="iterrate-logo-dark.svg" media="(prefers-color-scheme: dark)"><img src="iterrate-logo.svg" alt="Iterrate home" width="150" height="63"></picture></a>
+    <a class="brand" href="./"><picture><source srcset="iterrate-logo-dark.svg" media="(prefers-color-scheme: dark)"><img src="iterrate-logo.svg" alt="Iterrate home" width="150" height="63"></picture></a>
     <nav aria-label="Main"><ul class="nav">{nav}</ul></nav>
     <script>(function(){{var n=document.querySelector('.nav'),c=n&&n.querySelector('[aria-current]');if(c&&n.scrollWidth>n.clientWidth)n.scrollLeft=c.offsetLeft-(n.clientWidth-c.offsetWidth)/2;}})();</script>
   </div>
@@ -69,9 +73,9 @@ FOOT = """</main>
     <picture><source srcset="iterrate-icon-dark.svg" media="(prefers-color-scheme: dark)"><img src="iterrate-icon.svg" alt="" width="44" height="44"></picture>
     <div>
       <p><strong>Iterrate (OPC) Private Limited</strong> · CIN U85500KL2024OPC090447</p>
-      <p>House No. KP 16/356, V.K. Koickal, Enikkara, Karakulam P.O., Thiruvananthapuram, Kerala 695564</p>
-      <p><a href="mailto:contact@iterrate.in">contact@iterrate.in</a> · <a href="tel:+918412897977">+91 84128 97977</a></p>
-      <p>Queries and grievances: Sangeeth Saji Varma, Director</p>
+      <p>House No. KP 16/356, V.K. Koickal, Enikkara, Karakulam P.O., Thiruvananthapuram, Kerala 695564, India</p>
+      <p><a href="mailto:contact@iterrate.in">contact@iterrate.in</a> · <a href="tel:+918412897977">+91&nbsp;84128&nbsp;97977</a></p>
+      <p>Queries and grievances: Sangeeth Saji Varma, Director, <a href="mailto:sangeeth@iterrate.in">sangeeth@iterrate.in</a></p>
     </div>
     <ul>
       <li><a href="company.html#disclosures">Statutory disclosures</a></li>
@@ -90,7 +94,7 @@ PAGES = {}
 # Milestones, newest first: (datetime, shown date, heading). Home's "Now" strip shows the first one.
 MILESTONES = [
     ("2026-11", "November 2026", "Saho's architecture settled; first test version under way"),
-    ("2025-04", "April 2025", "Startup recognition from DPIIT and Kerala Startup Mission obtained"),
+    ("2025-04", "April 2025", "Startup recognition from DPIIT (Startup India) and Kerala Startup Mission obtained"),
     ("2024-11-08", "November 2024", "Iterrate incorporated in Thiruvananthapuram"),
 ]
 NOW = MILESTONES[0]
@@ -111,6 +115,11 @@ def annual_return_rows():
     return "\n".join(rows)
 
 INSTITUTIONS = "a library, a college, a panchayat, a hospital"
+PHONE = '<a href="tel:+918412897977">+91&nbsp;84128&nbsp;97977</a>'   # non-breaking spaces: never split across lines
+# The registered address; each line is its own span so it can wrap naturally on phones (R2).
+ADDRESS = ('<span class="line">House No. KP 16/356, V.K. Koickal, Enikkara, </span>'
+           '<span class="line">Karakulam P.O., Thiruvananthapuram, </span>'
+           '<span class="line">Kerala 695564, India</span>')
 
 # ---------------------------------------------------------------- Home
 PAGES["index.html"] = ("Iterrate · Tools that belong to the places that use them",
@@ -119,7 +128,8 @@ f"""
 <div class="wrap">
   <div class="hero">
     <h1>Tools that <em>belong</em> to the places that use them.</h1>
-    <p class="lede">Iterrate is a small company building Saho, an open, federated learning platform.<br>Any institution ({INSTITUTIONS}) can run its own Saho, and learners keep what they learn, wherever they go.</p>
+    <p class="lede">Iterrate is a small company building Saho, an open, federated learning platform.</p>
+    <p class="lede">Any institution ({INSTITUTIONS}) can run its own Saho, and learners keep what they learn, wherever they go.</p>
     <div class="btns">
       <a class="btn primary" href="saho.html">Meet Saho</a>
       <a class="btn" href="how-we-work.html">How we work</a>
@@ -142,12 +152,12 @@ f"""
       <div class="tile sky">
         <h2>Federated by design</h2>
         <p>Every institution can run its own Saho. They connect to each other, and nobody owns the whole network.</p>
-        <a class="go" href="how-we-work.html">Our principles</a>
+        <a class="go" href="how-we-work.html#federated">Our principles</a>
       </div>
       <div class="tile earth">
-        <h2>Free to choose</h2>
+        <h2>Control over your AI</h2>
         <p>People and institutions shouldn't depend on one platform or one AI model. Saho lets them choose, and run their own.</p>
-        <a class="go" href="how-we-work.html">Why it matters</a>
+        <a class="go" href="how-we-work.html#ai">Why it matters</a>
       </div>
     </div>
   </section>
@@ -197,7 +207,7 @@ f"""
     <span class="mark sky"></span>
     <h2>Places, not a platform</h2>
     <p>Any institution ({INSTITUTIONS}) can run its own Saho, which we call a <em>place</em>. Places talk to each other, so a learner at a village library can join a circle at a college nearby.</p>
-    <p>Every learner has one home for their account and record. They decide what each place can see, and they can take that back. Private conversations with the guide stay at home.</p>
+    <p>Every learner has one home place for their account and record. They decide what each place can see, and they can take that back. Private conversations with the guide stay in their home place.</p>
     <p>One Saho can serve every library in a panchayat. A single person can also run their own.</p>
   </section>
 
@@ -228,11 +238,11 @@ PAGES["how-we-work.html"] = ("How we work · Iterrate",
   </section>
 
   <ol class="principles">
-    <li><h2>Federated, not centralised</h2><p>No single company, including us, should hold everyone's learning in one place. Institutions run their own copies of Saho, called instances (we call each one a place), and those instances work together.</p></li>
-    <li><h2>Learners own their records</h2><p>What you learn and say belongs to you. Places see only what you allow, and you can take that back.</p></li>
-    <li><h2>Local first</h2><p>Malayalam and Manglish come first, not as an afterthought. Saho should run on modest hardware, close to the people who use it.</p></li>
-    <li><h2>Open source</h2><p>The software will be open, so that anyone can inspect it, run it and improve it, and so that no one is tied to us.</p></li>
-    <li><h2>Control over your AI</h2><p>People and institutions shouldn't depend on a single platform or model. Saho works with whichever AI model a place chooses, including ones it runs itself.</p><p>AI helps people think and find their way; it doesn't replace teachers, librarians or each other.</p></li>
+    <li id="federated"><h2>Federated, not centralised</h2><p>No single company, including us, should hold everyone's learning in one place. Institutions run their own copies of Saho, called instances (we call each one a place), and those instances work together.</p></li>
+    <li id="records"><h2>Learners own their records</h2><p>What you learn and say belongs to you. Places see only what you allow, and you can take that back.</p></li>
+    <li id="local-first"><h2>Local first</h2><p>Malayalam and Manglish come first, not as an afterthought. Saho should run on modest hardware, close to the people who use it.</p></li>
+    <li id="open-source"><h2>Open source</h2><p>The software will be open, so that anyone can inspect it, run it and improve it, and so that no one is tied to us.</p></li>
+    <li id="ai"><h2>Control over your AI</h2><p>People and institutions shouldn't depend on a single platform or model. Saho works with whichever AI model a place chooses, including ones it runs itself.</p><p>AI helps people think and find their way; it doesn't replace teachers, librarians or each other.</p></li>
   </ol>
 
   <section>
@@ -253,13 +263,13 @@ PAGES["how-we-work.html"] = ("How we work · Iterrate",
 
 # ---------------------------------------------------------------- About
 PAGES["about.html"] = ("About · Iterrate",
-"About Iterrate (OPC) Private Limited.",
+"Iterrate (OPC) Private Limited is a small company in Thiruvananthapuram, founded by Sangeeth in 2024, building Saho, an open, federated learning platform.",
 """
 <div class="wrap narrow">
   <section class="page-top">
     <span class="mark"></span>
     <h1>About Iterrate</h1>
-    <p class="lede">Iterrate (OPC) Private Limited is a small company in Thiruvananthapuram, incorporated on 8 November 2024 and recognised as a startup by DPIIT and Kerala Startup Mission.</p>
+    <p class="lede">Iterrate (OPC) Private Limited is a small company in Thiruvananthapuram, incorporated on 8 November 2024 and recognised as a startup by DPIIT (Startup India) and Kerala Startup Mission.</p>
   </section>
 
   <section>
@@ -277,7 +287,7 @@ PAGES["about.html"] = ("About · Iterrate",
   <section class="strip">
     <picture><source srcset="iterrate-logo-dark.svg" media="(prefers-color-scheme: dark)"><img src="iterrate-logo.svg" alt="The Iterrate logo" width="200" height="84"></picture>
     <div>
-      <p><strong>The name</strong> is <em>i + terra + te</em>: a person, and the earth they stand on. Together it reads <em>iterate</em>: try, reflect, try again.</p>
+      <p><strong>The name</strong> is <em>i + terra + te</em>: a person and the earth they stand on, with <em>te</em> completing the word. Together it reads <em>iterate</em>: try, reflect, try again.</p>
       <p><strong>The logo</strong> draws that loop, with a sky line over the top and an earth line underneath, and a green arrow that breaks out at the end. Each turn of learning carries you out into the world.</p>
     </div>
   </section>
@@ -286,7 +296,7 @@ PAGES["about.html"] = ("About · Iterrate",
 
 # ---------------------------------------------------------------- Updates
 PAGES["updates.html"] = ("Updates · Iterrate",
-"Iterrate's milestones, newest first.",
+"Milestones in building Iterrate and Saho, newest first, and how to get an email at each new one.",
 f"""
 <div class="wrap narrow">
   <section class="page-top">
@@ -321,12 +331,12 @@ f"""
       <dl class="facts">
         <dt>Name</dt><dd>Iterrate (OPC) Private Limited</dd>
         <dt>Corporate Identity Number</dt><dd>U85500KL2024OPC090447</dd>
-        <dt>Registered office</dt><dd>House No. KP 16/356, V.K. Koickal, Enikkara,<br>Karakulam P.O., Thiruvananthapuram,<br>Kerala 695564, India</dd>
-        <dt>Telephone</dt><dd><a href="tel:+918412897977">+91 84128 97977</a></dd>
+        <dt>Registered office</dt><dd class="addr">{ADDRESS}</dd>
+        <dt>Telephone</dt><dd>{PHONE}</dd>
         <dt>Email</dt><dd><a href="mailto:contact@iterrate.in">contact@iterrate.in</a></dd>
-        <dt>Queries and grievances</dt><dd>Sangeeth Saji Varma, Director<br><a href="mailto:contact@iterrate.in">contact@iterrate.in</a></dd>
+        <dt>Queries and grievances</dt><dd>Sangeeth Saji Varma, Director<br><a href="mailto:sangeeth@iterrate.in">sangeeth@iterrate.in</a></dd>
         <dt>GSTIN</dt><dd>32AAHCI9117Q1Z3</dd>
-        <dt>DPIIT recognition</dt><dd>DIPP198219</dd>
+        <dt>DPIIT (Startup India) recognition</dt><dd>DIPP198219</dd>
         <dt>Kerala Startup Mission</dt><dd>DIPP198219/2024/KSUM4141</dd>
       </dl>
     </div>
@@ -351,8 +361,8 @@ f"""
 
 # ---------------------------------------------------------------- Contact
 PAGES["contact.html"] = ("Contact · Iterrate",
-"How to contact Iterrate (OPC) Private Limited.",
-"""
+"Contact Iterrate by email, phone or post, in Malayalam or English. Includes our privacy note: no cookies, no analytics.",
+f"""
 <div class="wrap narrow">
   <section class="page-top">
     <span class="mark sky"></span>
@@ -368,11 +378,11 @@ PAGES["contact.html"] = ("Contact · Iterrate",
       </div>
       <div class="tile sky">
         <h2>Phone</h2>
-        <p><a href="tel:+918412897977">+91 84128 97977</a></p>
+        <p>{PHONE}</p>
       </div>
       <div class="tile earth">
         <h2>Post</h2>
-        <p>Iterrate (OPC) Private Limited<br>House No. KP 16/356, V.K. Koickal, Enikkara,<br>Karakulam P.O., Thiruvananthapuram,<br>Kerala 695564</p>
+        <p class="addr">Iterrate (OPC) Private Limited<br>{ADDRESS}</p>
       </div>
       <div class="tile leaf">
         <h2>Sangeeth, Director</h2>
@@ -384,13 +394,36 @@ PAGES["contact.html"] = ("Contact · Iterrate",
   <section id="privacy">
     <span class="mark earth"></span>
     <h2>Privacy</h2>
-    <p>This site sets no cookies and uses no analytics or trackers.</p>
+    <p>This site sets no cookies and uses no analytics or trackers. It is hosted on GitHub Pages, and GitHub logs visitors' IP addresses for security (see <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a>). Our email is handled by Zoho Mail.</p>
     <p>If you write to us, we use your email address and what you tell us only to reply. If you ask for updates, we use your address only to send milestone emails. We don't share it with anyone, and we delete it when you ask. Write to <a href="mailto:contact@iterrate.in">contact@iterrate.in</a> to see, correct or delete what we hold about you.</p>
   </section>
 </div>
 """)
 
 SCRIPTS = {"index.html": '<script src="{loop}"></script>\n'}
+
+# Extra lines in <head> for some pages. Home: preload the italic font ("belong" is at the top),
+# and describe the company to search engines (structured data, schema.org).
+ORG = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Iterrate",
+    "legalName": "Iterrate (OPC) Private Limited",
+    "url": BASE,
+    "logo": BASE + "icon-512.png",
+    "email": "contact@iterrate.in",
+    "telephone": "+91 84128 97977",
+    "foundingDate": "2024-11-08",
+    "founder": {"@type": "Person", "name": "Sangeeth", "url": "https://sangeethvarma.com"},
+    "address": {"@type": "PostalAddress",
+                "streetAddress": "House No. KP 16/356, V.K. Koickal, Enikkara, Karakulam P.O.",
+                "addressLocality": "Thiruvananthapuram", "addressRegion": "Kerala",
+                "postalCode": "695564", "addressCountry": "IN"},
+}
+EXTRA_HEAD = {
+    "index.html": '<link rel="preload" href="fonts/crimson-pro-italic-latin.woff2" as="font" type="font/woff2" crossorigin>\n'
+                  '<script type="application/ld+json">' + json.dumps(ORG, ensure_ascii=False) + '</script>\n',
+}
 
 
 # ---------------------------------------------------------------- 404
@@ -403,7 +436,7 @@ PAGES["404.html"] = ("Page not found · Iterrate",
     <h1>Page not found</h1>
     <p class="lede">There's nothing at this address. It may have moved, or the link may have a typo.</p>
     <div class="btns">
-      <a class="btn primary" href="index.html">Go to the home page</a>
+      <a class="btn primary" href="./">Go to the home page</a>
       <a class="btn" href="contact.html">Contact us</a>
     </div>
   </section>
@@ -439,32 +472,48 @@ def plain(text):
     return typography(text).replace('"', "&quot;")
 
 
+def last_changed(fname, changed_now):
+    """The date a page last really changed: today if this build changed it, otherwise the date
+    of the last git commit that touched it (so unchanged pages keep their old date)."""
+    if not changed_now:
+        try:
+            out = subprocess.run(["git", "log", "-1", "--format=%cs", "--", f"{SITE.name}/{fname}"],
+                                 cwd=SITE.parent, capture_output=True, text=True).stdout.strip()
+            if out:
+                return out
+        except OSError:
+            pass
+    return datetime.date.today().isoformat()
+
+
 def build():
     pages = []
+    changed = {}
     for fname, (title, desc, body) in PAGES.items():
         nav = "".join(
-            f'<li><a href="{href}"{" aria-current=\"page\"" if href == fname else ""}>{label}</a></li>'
+            f'<li><a href="{href}"{" aria-current=\"page\"" if href == fname or (href == "./" and fname == "index.html") else ""}>{label}</a></li>'
             for href, label in NAV
         )
         url = BASE if fname == "index.html" else BASE + fname
         head = HEAD.replace('href="style.css"', f'href="{asset("style.css")}"').format(
-            title=plain(title), desc=plain(desc), nav=nav, url=url, base=BASE)
+            title=plain(title), desc=plain(desc), nav=nav, url=url, base=BASE,
+            extra_head=EXTRA_HEAD.get(fname, ""))
         if fname == "404.html":
             # GitHub serves this page at any missing address, so links must start from the site root.
             head = head.replace("<head>\n", '<head>\n<base href="/">\n', 1).replace(
                 '<link rel="canonical" href="https://iterrate.in/404.html">\n', "")
             head = head.replace('<meta name="description"', '<meta name="robots" content="noindex">\n<meta name="description"', 1)
         else:
-            pages.append(url)
+            pages.append((url, fname))
         foot = FOOT.format(scripts=SCRIPTS.get(fname, "").replace("{loop}", asset("loop.js")), year=YEAR)
         html = head + typography(body) + typography(foot)
+        changed[fname] = not (SITE / fname).exists() or (SITE / fname).read_text(encoding="utf-8") != html
         (SITE / fname).write_text(html, encoding="utf-8")
         print("wrote", fname)
 
-    today = datetime.date.today().isoformat()
     (SITE / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + "".join(f"  <url><loc>{u}</loc><lastmod>{today}</lastmod></url>\n" for u in pages)
+        + "".join(f"  <url><loc>{u}</loc><lastmod>{last_changed(f, changed[f])}</lastmod></url>\n" for u, f in pages)
         + "</urlset>\n", encoding="utf-8")
     (SITE / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n", encoding="utf-8")
     print("wrote sitemap.xml, robots.txt")
