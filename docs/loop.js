@@ -20,12 +20,30 @@
     svg.appendChild(el);
     return el;
   }
+  // A mask cuts a 2px gap in the earth line where the left green line crosses it, following
+  // the green curve exactly. A mask removes the earth line there instead of painting over it,
+  // so it works on any background (light, dark, or a browser's forced dark mode).
+  var defs = document.createElementNS(NS, 'defs');
+  var mask = document.createElementNS(NS, 'mask');
+  mask.setAttribute('id', 'loop-knock');
+  mask.setAttribute('maskUnits', 'userSpaceOnUse');
+  var maskBg = document.createElementNS(NS, 'rect');
+  maskBg.setAttribute('fill', 'white');
+  var knock = document.createElementNS(NS, 'path');
+  knock.setAttribute('fill', 'none');
+  knock.setAttribute('stroke', 'black');
+  knock.style.strokeWidth = '9px';   // inline, so the stylesheet's line width doesn't override it
+  knock.style.animation = 'none';
+  knock.setAttribute('stroke-linecap', 'round');
+  mask.appendChild(maskBg);
+  mask.appendChild(knock);
+  defs.appendChild(mask);
+  svg.appendChild(defs);
+
   var earth = line('earth');
+  earth.setAttribute('mask', 'url(#loop-knock)');
   var rightUp = line('leaf');
   var sky = line('sky');
-  // A paper-coloured line under the left green line, 4px wider, cuts a 2px gap in the
-  // earth line that follows the green curve exactly (on both sides of the corner).
-  var knock = line('knock');
   var leftDown = line('leaf');
   var exit = line('leaf');
   var exitBarb = line('leaf');   // second barb of the exit arrowhead
@@ -39,6 +57,10 @@
   function draw() {
     var w = hero.clientWidth, h = hero.clientHeight;
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    mask.setAttribute('x', -50); mask.setAttribute('y', -50);
+    mask.setAttribute('width', w + 100); mask.setAttribute('height', h + 100);
+    maskBg.setAttribute('x', -50); maskBg.setAttribute('y', -50);
+    maskBg.setAttribute('width', w + 100); maskBg.setAttribute('height', h + 100);
     var small = w < 520;
     var xl = small ? 12 : 30;            // left upright (the t)
     var xr = w - (small ? 24 : 70);      // right upright (the a)
@@ -87,7 +109,7 @@
     d = time(earth, t);    t += d * OVERLAP;
     d = time(rightUp, t);  t += d * OVERLAP;
     d = time(sky, t);      t += d * OVERLAP;
-    d = time(leftDown, t); time(knock, t, d); t += d * OVERLAP;
+    d = time(leftDown, t); t += d * OVERLAP;
     d = time(exit, t);
     time(exitBarb, t + d * 0.8, d * 0.25);
     timed = true;
