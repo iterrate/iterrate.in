@@ -337,7 +337,14 @@ PAGES["contact.html"] = ("Contact · Iterrate",
 </div>
 """)
 
-SCRIPTS = {"index.html": '<script src="loop.js"></script>\n'}
+SCRIPTS = {"index.html": '<script src="{loop}"></script>\n'}
+
+
+def asset(name):
+    """Link to a file with a short content hash, so browsers fetch it again after each change."""
+    import hashlib
+    h = hashlib.sha1((SITE / name).read_bytes()).hexdigest()[:8]
+    return f"{name}?v={h}"
 
 
 def build():
@@ -346,7 +353,7 @@ def build():
             f'<li><a href="{href}"{" aria-current=\"page\"" if href == fname else ""}>{label}</a></li>'
             for href, label in NAV
         )
-        html = HEAD.format(title=title, desc=desc, nav=nav) + body + FOOT.format(scripts=SCRIPTS.get(fname, ""))
+        html = HEAD.replace('href="style.css"', f'href="{asset("style.css")}"').format(title=title, desc=desc, nav=nav) + body + FOOT.format(scripts=SCRIPTS.get(fname, "").replace("{loop}", asset("loop.js")))
         (SITE / fname).write_text(html, encoding="utf-8")
         print("wrote", fname)
 
