@@ -129,7 +129,9 @@ section{margin:72px 0}
 .principles li{counter-increment:p;display:grid;grid-template-columns:64px 1fr;gap:6px 18px;padding:26px 0;border-top:1px solid var(--rule)}
 .principles li::before{content:counter(p,decimal-leading-zero);font-family:var(--display);font-size:var(--t-xl);line-height:1;color:var(--leaf-text);grid-row:span 2}
 .principles h2{font-size:var(--t-l);margin:0}
+.principles li > *{grid-column:2}
 .principles p{margin:0;color:var(--muted)}
+.principles p + p{margin-top:10px}
 
 /* timeline */
 .timeline{list-style:none;margin:0;padding:0 0 0 28px;border-left:3px solid var(--rule)}
