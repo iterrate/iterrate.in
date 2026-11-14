@@ -117,10 +117,12 @@
   draw();
   // Redraw whenever the box changes size (fonts loading, window resizing).
   var first = true;
-  new ResizeObserver(function () {
-    if (first) { first = false; return; }
-    draw();
-  }).observe(hero);
+  if (window.ResizeObserver) {   // missing in very old browsers; the loop is then drawn once
+    new ResizeObserver(function () {
+      if (first) { first = false; return; }
+      draw();
+    }).observe(hero);
+  }
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { draw(); });
   }
