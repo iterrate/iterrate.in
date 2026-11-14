@@ -181,7 +181,7 @@ f"""
     <span class="mark"></span>
     <h1>Saho</h1>
     <p class="lede">An open learning platform, in Malayalam and English. Saho is a guide and a circle: it helps you work out what to learn next, and finds you people to learn it with.</p>
-    <p class="small">Saho is in development. Its own site, saho.day, is coming soon.</p>
+    <p class="small">Saho is in development. Its own site is <a href="https://saho.day">saho.day</a>.</p>
   </section>
 
   <section>
@@ -197,7 +197,7 @@ f"""
     <h2>What it does</h2>
     <div class="grid two">
       <div class="tile leaf"><h3>A guide</h3><p>Talk things through in Malayalam, English or a mix of Malayalam and English. The guide suggests paths and next steps. It doesn't lecture.</p></div>
-      <div class="tile sky"><h3>Circles</h3><p>Small groups of learners who meet where they are, online and in person.</p></div>
+      <div class="tile sky"><h3>Circles</h3><p>Small groups of learners who meet where they are, online or in person.</p></div>
       <div class="tile earth"><h3>Paths</h3><p>Learning paths shared between places, with credit to the people who made them.</p></div>
       <div class="tile leaf"><h3>Your record</h3><p>A record of what you've learned that belongs to you and goes with you.</p></div>
     </div>
