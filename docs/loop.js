@@ -21,6 +21,11 @@
     svg.appendChild(el);
     return el;
   });
+  // The earth line's stub outside the loop is a filled shape, so its end can be cut on a slant.
+  var stub = document.createElementNS(NS, 'path');
+  stub.style.fill = 'var(--earth)';
+  stub.style.stroke = 'none';
+  svg.insertBefore(stub, svg.firstChild);
 
   function draw() {
     var w = hero.clientWidth, h = hero.clientHeight;
@@ -34,14 +39,20 @@
 
     // Gaps where lines meet, as in the logo. Distances are between line centres,
     // so the visible gap is that minus the line width (5px).
-    var g = 15;   // 10px gaps where the loop's lines meet
-    var gb = 7;   // 2px breaks in the earth line around the green corner
+    var g = 10;   // 5px gaps where the loop's lines meet
+    var gb = 7;   // 2px break in the earth line after the green corner
+    var half = 2.5;  // half the line width
 
-    // earth: from outside the loop on the left, breaking around the green corner,
-    // then under everything, kicking up into the right upright
+    // earth: from just after the green corner, under everything, kicking up into the right upright
     var kx = xr - 6, ky = bot - kick;
+    // Stub: from outside the loop to the green corner, its end cut like a backslash so it
+    // runs parallel to the curve with a 2px slit (the curve's outer edge is at 45 degrees there).
+    var cut = xl + (r / 4) - half * Math.SQRT2 + half - 2 * Math.SQRT2 + 1;   // cut line x at the line centre (+1 tuned by eye)
+    stub.setAttribute('d',
+      'M' + half + ' ' + (bot - half) + ' H' + (cut - half) + ' L' + (cut + half) + ' ' + (bot + half) +
+      ' H' + half + ' A' + half + ' ' + half + ' 0 0 1 ' + half + ' ' + (bot - half) + ' Z');
     paths[0].setAttribute('d',
-      'M0 ' + bot + ' H' + (xl - gb) + ' M' + (xl + r + gb) + ' ' + bot +
+      'M' + (xl + r + gb) + ' ' + bot +
       ' H' + (kx - kick) + ' L' + kx + ' ' + ky + ' M' + kx + ' ' + ky + ' H' + (kx - a - 4));
     // left upright: down from the sky line, curving round to become the bottom line for a moment
     var skyEnd = top + 26;
