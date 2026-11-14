@@ -35,7 +35,7 @@
     // Gaps where lines meet, as in the logo. Distances are between line centres,
     // so the visible gap is that minus the line width (5px).
     var g = 15;   // 10px gaps where the loop's lines meet
-    var gb = 9;   // 4px breaks in the earth line around the green corner
+    var gb = 7;   // 2px breaks in the earth line around the green corner
 
     // earth: from outside the loop on the left, breaking around the green corner,
     // then under everything, kicking up into the right upright
