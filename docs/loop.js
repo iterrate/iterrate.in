@@ -32,23 +32,33 @@
     var r = 14, a = small ? 10 : 13;     // corner radius, arrowhead size
     var kick = small ? 22 : 30;          // earth line's diagonal kick
 
-    // earth: from outside the loop on the left, under everything, kicking up into the right upright
+    // Gaps where lines meet, as in the logo. Distances are between line centres,
+    // so the visible gap is that minus the line width (5px).
+    var g = 15;   // 10px gaps where the loop's lines meet
+    var gb = 9;   // 4px breaks in the earth line around the green corner
+
+    // earth: from outside the loop on the left, breaking around the green corner,
+    // then under everything, kicking up into the right upright
     var kx = xr - 6, ky = bot - kick;
     paths[0].setAttribute('d',
-      'M0 ' + bot + ' H' + (kx - kick) + ' L' + kx + ' ' + ky + ' M' + kx + ' ' + ky + ' H' + (kx - a - 4));
-    // left upright: down from under the sky arrowhead, curving into the earth line like the top-right corner
-    paths[1].setAttribute('d', 'M' + xl + ' ' + (top + 40) + ' V' + (bot - r) + ' Q' + xl + ' ' + bot + ' ' + (xl + r) + ' ' + bot);
-    // sky: up from the right upright, across the top, down into the left upright with a half arrowhead
+      'M0 ' + bot + ' H' + (xl - gb) + ' M' + (xl + r + gb) + ' ' + bot +
+      ' H' + (kx - kick) + ' L' + kx + ' ' + ky + ' M' + kx + ' ' + ky + ' H' + (kx - a - 4));
+    // left upright: down from the sky line, curving round to become the bottom line for a moment
+    var skyEnd = top + 26;
+    paths[1].setAttribute('d', 'M' + xl + ' ' + (skyEnd + g) + ' V' + (bot - r) +
+      ' Q' + xl + ' ' + bot + ' ' + (xl + r) + ' ' + bot);
+    // sky: up from the right upright, across the top, down towards the left upright with a half arrowhead
+    var skyStart = top + 34;
     paths[2].setAttribute('d',
-      'M' + xr + ' ' + (top + 34) + ' V' + (top + r) + ' Q' + xr + ' ' + top + ' ' + (xr - r) + ' ' + top +
-      ' H' + (xl + r) + ' Q' + xl + ' ' + top + ' ' + xl + ' ' + (top + r) + ' V' + (top + 26) +
-      ' L' + (xl + a) + ' ' + (top + 26 - a));
+      'M' + xr + ' ' + skyStart + ' V' + (top + r) + ' Q' + xr + ' ' + top + ' ' + (xr - r) + ' ' + top +
+      ' H' + (xl + r) + ' Q' + xl + ' ' + top + ' ' + xl + ' ' + (top + r) + ' V' + skyEnd +
+      ' L' + (xl + a) + ' ' + (skyEnd - a));
     // right upright
-    paths[3].setAttribute('d', 'M' + xr + ' ' + (top + 50) + ' V' + (ky - 12));
-    // exit arrow
-    var ex = w - 4;
+    paths[3].setAttribute('d', 'M' + xr + ' ' + (skyStart + g) + ' V' + (ky - g));
+    // exit arrow: starts g away (at right angles) from the earth line's diagonal kick
+    var ex = w - 4, exStart = kx - kick + g * Math.SQRT2;
     paths[4].setAttribute('d',
-      'M' + (kx + 12) + ' ' + bot + ' H' + ex + ' M' + (ex - a) + ' ' + (bot - a) + ' L' + ex + ' ' + bot + ' L' + (ex - a) + ' ' + (bot + a));
+      'M' + exStart + ' ' + bot + ' H' + ex + ' M' + (ex - a) + ' ' + (bot - a) + ' L' + ex + ' ' + bot + ' L' + (ex - a) + ' ' + (bot + a));
 
     paths.forEach(function (p) {
       p.style.setProperty('--len', Math.ceil(p.getTotalLength()) + 1);
