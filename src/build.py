@@ -196,7 +196,7 @@ f"""
     <span class="mark earth"></span>
     <h2>What it does</h2>
     <div class="grid two">
-      <div class="tile leaf"><h3>A guide</h3><p>Talk things through in Malayalam, English or Manglish. The guide suggests paths and next steps. It doesn't lecture.</p></div>
+      <div class="tile leaf"><h3>A guide</h3><p>Talk things through in Malayalam, English or a mix of Malayalam and English. The guide suggests paths and next steps. It doesn't lecture.</p></div>
       <div class="tile sky"><h3>Circles</h3><p>Small groups of learners who meet where they are, online and in person.</p></div>
       <div class="tile earth"><h3>Paths</h3><p>Learning paths shared between places, with credit to the people who made them.</p></div>
       <div class="tile leaf"><h3>Your record</h3><p>A record of what you've learned that belongs to you and goes with you.</p></div>
@@ -240,7 +240,7 @@ PAGES["how-we-work.html"] = ("How we work · Iterrate",
   <ol class="principles">
     <li id="federated"><h2>Federated, not centralised</h2><p>No single company, including us, should hold everyone's learning in one place. Institutions run their own copies of Saho, called instances (we call each one a place), and those instances work together.</p></li>
     <li id="records"><h2>Learners own their records</h2><p>What you learn and say belongs to you. Places see only what you allow, and you can take that back.</p></li>
-    <li id="local-first"><h2>Local first</h2><p>Malayalam and Manglish come first, not as an afterthought. Saho should run on modest hardware, close to the people who use it.</p></li>
+    <li id="local-first"><h2>Local first</h2><p>Malayalam, and a mix of Malayalam and English, come first, not as an afterthought. Saho should run on modest hardware, close to the people who use it.</p></li>
     <li id="open-source"><h2>Open source</h2><p>The software will be open, so that anyone can inspect it, run it and improve it, and so that no one is tied to us.</p></li>
     <li id="ai"><h2>Control over your AI</h2><p>People and institutions shouldn't depend on a single platform or model. Saho works with whichever AI model a place chooses, including ones it runs itself.</p><p>AI helps people think and find their way; it doesn't replace teachers, librarians or each other.</p></li>
   </ol>
@@ -361,13 +361,13 @@ f"""
 
 # ---------------------------------------------------------------- Contact
 PAGES["contact.html"] = ("Contact · Iterrate",
-"Contact Iterrate by email, phone or post, in Malayalam or English. Includes our privacy note: no cookies, no analytics.",
+"Contact Iterrate by email, phone or post. Includes our privacy note: no cookies, no analytics.",
 f"""
 <div class="wrap narrow">
   <section class="page-top">
     <span class="mark sky"></span>
     <h1>Get in touch</h1>
-    <p class="lede">Does your institution want to run Saho, or would you like to help build it? We'd like to hear from you. Write in Malayalam or English.</p>
+    <p class="lede">Does your institution want to run Saho, or would you like to help build it? We'd like to hear from you.</p>
   </section>
 
   <section>
