@@ -228,10 +228,10 @@ PAGES["how-we-work.html"] = ("How we work · Iterrate",
   </section>
 
   <ol class="principles">
-    <li><h2>Federated, not centralized</h2><p>No single company, including us, should hold everyone's learning in one place. Institutions run their own instances, and those instances work together.</p></li>
+    <li><h2>Federated, not centralised</h2><p>No single company, including us, should hold everyone's learning in one place. Institutions run their own copies of Saho, called instances (we call each one a place), and those instances work together.</p></li>
     <li><h2>Learners own their records</h2><p>What you learn and say belongs to you. Places see only what you allow, and you can take that back.</p></li>
     <li><h2>Local first</h2><p>Malayalam and Manglish come first, not as an afterthought. Saho should run on modest hardware, close to the people who use it.</p></li>
-    <li><h2>Open source</h2><p>The software will be open, so that anyone can inspect it, run it and improve it, and so that no one is locked in to us.</p></li>
+    <li><h2>Open source</h2><p>The software will be open, so that anyone can inspect it, run it and improve it, and so that no one is tied to us.</p></li>
     <li><h2>Control over your AI</h2><p>People and institutions shouldn't depend on a single platform or model. Saho works with whichever AI model a place chooses, including ones it runs itself.</p><p>AI helps people think and find their way; it doesn't replace teachers, librarians or each other.</p></li>
   </ol>
 
