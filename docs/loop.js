@@ -33,6 +33,7 @@
   var TOTAL = 2.2;   // s, the whole loop, whatever the screen size
   var PAUSE = 0.06;  // s, a beat at each gap where one line hands over to the next
 
+  var timed = false;
   function draw() {
     var w = hero.clientWidth, h = hero.clientHeight;
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
@@ -72,9 +73,14 @@
     var t = 0;
     function time(el, start) {
       var len = el.getTotalLength();
-      el.style.setProperty('--len', Math.ceil(len) + 1);
-      el.style.setProperty('--delay', start.toFixed(3) + 's');
-      el.style.setProperty('--dur', (len / SPEED).toFixed(3) + 's');
+      var L = Math.ceil(len) + 1;
+      // Plain numbers only (no calc() in SVG dash properties: Safari ignores it).
+      el.style.setProperty('--dash', L + ' ' + (L + 10));
+      el.style.setProperty('--off', String(L + 6));
+      if (!timed) {   // set timing once, so a redraw (fonts loading, resize) doesn't restart it
+        el.style.setProperty('--delay', start.toFixed(3) + 's');
+        el.style.setProperty('--dur', (len / SPEED).toFixed(3) + 's');
+      }
       return start + len / SPEED;
     }
     t = time(earth, t) + PAUSE;
@@ -85,6 +91,7 @@
     var exitLineEnd = t + (ex - exStart) / SPEED;
     time(exit, t);
     time(exitBarb, exitLineEnd);
+    timed = true;
   }
   draw();
   // Redraw whenever the box changes size (fonts loading, window resizing).
