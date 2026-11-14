@@ -30,8 +30,10 @@
   var exit = line('leaf');
   var exitBarb = line('leaf');   // second barb of the exit arrowhead
 
-  var TOTAL = 2.2;   // s, the whole loop, whatever the screen size
-  var PAUSE = 0.06;  // s, a beat at each gap where one line hands over to the next
+  // Timing: each line eases in and out over 0.4-0.8s (longer lines take longer), and the
+  // next line starts when the one before is about half drawn, so the loop flows round
+  // in about 1.8s.
+  var MIN_DUR = 0.4, MAX_DUR = 0.8, OVERLAP = 0.5;
 
   var timed = false;
   function draw() {
@@ -66,31 +68,28 @@
     exit.setAttribute('d', 'M' + exStart + ' ' + bot + ' H' + ex + ' L' + (ex - a) + ' ' + (bot - a));
     exitBarb.setAttribute('d', 'M' + ex + ' ' + bot + ' L' + (ex - a) + ' ' + (bot + a));
 
-    // Timing: each line starts when the one before it ends; constant speed throughout.
-    var total = [earth, rightUp, sky, leftDown, exit, exitBarb]
-      .reduce(function (sum, el) { return sum + el.getTotalLength(); }, 0);
-    var SPEED = total / (TOTAL - 4 * PAUSE);
-    var t = 0;
-    function time(el, start) {
+    var lines = [earth, rightUp, sky, leftDown, exit];
+    var longest = Math.max.apply(null, lines.map(function (el) { return el.getTotalLength(); }));
+    function time(el, start, dur) {
       var len = el.getTotalLength();
       var L = Math.ceil(len) + 1;
-      // Plain numbers only (no calc() in SVG dash properties: Safari ignores it).
+      // Plain numbers only (no calc() in SVG dash properties: some browsers ignore it).
       el.style.setProperty('--dash', L + ' ' + (L + 10));
       el.style.setProperty('--off', String(L + 6));
+      if (dur === undefined) dur = MIN_DUR + (MAX_DUR - MIN_DUR) * len / longest;
       if (!timed) {   // set timing once, so a redraw (fonts loading, resize) doesn't restart it
         el.style.setProperty('--delay', start.toFixed(3) + 's');
-        el.style.setProperty('--dur', (len / SPEED).toFixed(3) + 's');
+        el.style.setProperty('--dur', dur.toFixed(3) + 's');
       }
-      return start + len / SPEED;
+      return dur;
     }
-    t = time(earth, t) + PAUSE;
-    t = time(rightUp, t) + PAUSE;
-    t = time(sky, t) + PAUSE;
-    time(knock, t);
-    t = time(leftDown, t) + PAUSE;
-    var exitLineEnd = t + (ex - exStart) / SPEED;
-    time(exit, t);
-    time(exitBarb, exitLineEnd);
+    var t = 0, d;
+    d = time(earth, t);    t += d * OVERLAP;
+    d = time(rightUp, t);  t += d * OVERLAP;
+    d = time(sky, t);      t += d * OVERLAP;
+    d = time(leftDown, t); time(knock, t, d); t += d * OVERLAP;
+    d = time(exit, t);
+    time(exitBarb, t + d * 0.8, d * 0.25);
     timed = true;
   }
   draw();

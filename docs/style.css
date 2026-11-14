@@ -56,7 +56,7 @@ p{margin:0 0 16px}
 .hero svg.loop .knock{stroke:var(--paper);stroke-width:9px}
 .hero svg.loop .sky{stroke:var(--sky)} .hero svg.loop .leaf{stroke:var(--leaf)} .hero svg.loop .earth{stroke:var(--earth)}
 @media (prefers-reduced-motion:no-preference){
-  .hero svg.loop.draw path{stroke-dasharray:var(--dash);stroke-dashoffset:var(--off);animation:draw var(--dur,1s) linear forwards;animation-delay:var(--delay,0s)}
+  .hero svg.loop.draw path{stroke-dasharray:var(--dash);stroke-dashoffset:var(--off);animation:draw var(--dur,1s) cubic-bezier(.45,.05,.35,1) forwards;animation-delay:var(--delay,0s)}
 }
 @keyframes draw{to{stroke-dashoffset:0}}
 .hero h1{max-width:17ch;margin-bottom:22px}
