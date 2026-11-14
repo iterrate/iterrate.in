@@ -21,11 +21,12 @@
     svg.appendChild(el);
     return el;
   });
-  // The earth line's stub outside the loop is a filled shape, so its end can be cut on a slant.
-  var stub = document.createElementNS(NS, 'path');
-  stub.style.fill = 'var(--earth)';
-  stub.style.stroke = 'none';
-  svg.insertBefore(stub, svg.firstChild);
+  // A paper-coloured line under the left green line, 4px wider, cuts a 2px gap in the
+  // earth line that follows the green curve exactly (on both sides of the corner).
+  var knock = document.createElementNS(NS, 'path');
+  knock.setAttribute('class', 'knock');
+  knock.style.setProperty('--delay', '0.35s');
+  svg.insertBefore(knock, paths[1]);
 
   function draw() {
     var w = hero.clientWidth, h = hero.clientHeight;
@@ -40,24 +41,17 @@
     // Gaps where lines meet, as in the logo. Distances are between line centres,
     // so the visible gap is that minus the line width (5px).
     var g = 10;   // 5px gaps where the loop's lines meet
-    var gb = 7;   // 2px break in the earth line after the green corner
-    var half = 2.5;  // half the line width
 
-    // earth: from just after the green corner, under everything, kicking up into the right upright
+    // earth: from outside the loop on the left (the knock-out line gaps it round the green corner), under everything, kicking up into the right upright
     var kx = xr - 6, ky = bot - kick;
-    // Stub: from outside the loop to the green corner, its end cut like a backslash so it
-    // runs parallel to the curve with a 2px slit (the curve's outer edge is at 45 degrees there).
-    var cut = xl + (r / 4) - half * Math.SQRT2 + half - 2 * Math.SQRT2 + 1;   // cut line x at the line centre (+1 tuned by eye)
-    stub.setAttribute('d',
-      'M' + half + ' ' + (bot - half) + ' H' + (cut - half) + ' L' + (cut + half) + ' ' + (bot + half) +
-      ' H' + half + ' A' + half + ' ' + half + ' 0 0 1 ' + half + ' ' + (bot - half) + ' Z');
     paths[0].setAttribute('d',
-      'M' + (xl + r + gb) + ' ' + bot +
+      'M0 ' + bot +
       ' H' + (kx - kick) + ' L' + kx + ' ' + ky + ' M' + kx + ' ' + ky + ' H' + (kx - a - 4));
     // left upright: down from the sky line, curving round to become the bottom line for a moment
     var skyEnd = top + 26;
     paths[1].setAttribute('d', 'M' + xl + ' ' + (skyEnd + g) + ' V' + (bot - r) +
       ' Q' + xl + ' ' + bot + ' ' + (xl + r) + ' ' + bot);
+    knock.setAttribute('d', paths[1].getAttribute('d'));
     // sky: up from the right upright, across the top, down towards the left upright with a half arrowhead
     var skyStart = top + 34;
     paths[2].setAttribute('d',
@@ -71,7 +65,7 @@
     paths[4].setAttribute('d',
       'M' + exStart + ' ' + bot + ' H' + ex + ' M' + (ex - a) + ' ' + (bot - a) + ' L' + ex + ' ' + bot + ' L' + (ex - a) + ' ' + (bot + a));
 
-    paths.forEach(function (p) {
+    paths.concat([knock]).forEach(function (p) {
       p.style.setProperty('--len', Math.ceil(p.getTotalLength()) + 1);
     });
   }
