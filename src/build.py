@@ -119,7 +119,7 @@ f"""
 <div class="wrap">
   <div class="hero">
     <h1>Tools that <em>belong</em> to the places that use them.</h1>
-    <p class="lede">Iterrate is a small company building Saho, an open, federated learning platform. Any institution ({INSTITUTIONS}) can run its own Saho, and learners own what they learn.</p>
+    <p class="lede">Iterrate is a small company building Saho, an open, federated learning platform.<br>Any institution ({INSTITUTIONS}) can run its own Saho, and learners keep what they learn, wherever they go.</p>
     <div class="btns">
       <a class="btn primary" href="saho.html">Meet Saho</a>
       <a class="btn" href="how-we-work.html">How we work</a>
@@ -198,7 +198,7 @@ f"""
     <h2>Places, not a platform</h2>
     <p>Any institution ({INSTITUTIONS}) can run its own Saho, which we call a <em>place</em>. Places talk to each other, so a learner at a village library can join a circle at a college nearby.</p>
     <p>Every learner has one home for their account and record. They decide what each place can see, and they can take that back. Private conversations with the guide stay at home.</p>
-    <p>One instance can serve every library in a panchayat. A single person can also run their own.</p>
+    <p>One Saho can serve every library in a panchayat. A single person can also run their own.</p>
   </section>
 
   <section>
@@ -228,7 +228,7 @@ PAGES["how-we-work.html"] = ("How we work · Iterrate",
   </section>
 
   <ol class="principles">
-    <li><h2>Federated, not central</h2><p>No single company, us included, should hold everyone's learning in one place. Institutions run their own instances, and those instances work together.</p></li>
+    <li><h2>Federated, not central</h2><p>No single company, us included, should hold everyone's learning in one place. Each institution runs its own copy of Saho, called an instance, and the instances work together. We call each one a place.</p></li>
     <li><h2>Learners own their record</h2><p>What you learn and say belongs to you. Places see only what you allow, and you can take that back.</p></li>
     <li><h2>Local first</h2><p>Malayalam and Manglish come first, not as an afterthought. Saho should run on modest hardware, close to the people who use it.</p></li>
     <li><h2>Open source</h2><p>The software will be open, so that anyone can inspect it, run it and improve it, and so that no one is tied to us.</p></li>
