@@ -93,6 +93,7 @@ PAGES = {}
 
 # Milestones, newest first: (datetime, shown date, heading). Home's "Now" strip shows the first one.
 MILESTONES = [
+    ("2026-11-14", "November 2026", "saho.day launched"),
     ("2026-11", "November 2026", "Saho's architecture settled; first test version under way"),
     ("2025-04", "April 2025", "Startup recognition from DPIIT (Startup India) and Kerala Startup Mission obtained"),
     ("2024-11-08", "November 2024", "Iterrate incorporated in Thiruvananthapuram"),
@@ -131,7 +132,7 @@ f"""
     <p class="lede">Iterrate is a small company building Saho, an open, federated learning platform.</p>
     <p class="lede">Any institution ({INSTITUTIONS}) can run its own Saho, and learners keep what they learn, wherever they go.</p>
     <div class="btns">
-      <a class="btn primary" href="saho.html">Meet Saho</a>
+      <a class="btn primary" href="https://saho.day">Meet Saho</a>
       <a class="btn" href="how-we-work.html">How we work</a>
     </div>
   </div>
@@ -147,7 +148,7 @@ f"""
       <div class="tile leaf">
         <h2>Saho</h2>
         <p>A guide and a circle for people learning on their own, at any stage of life. For finding a direction, not cramming for one exam.</p>
-        <a class="go" href="saho.html">What Saho is</a>
+        <a class="go" href="https://saho.day">Visit saho.day</a>
       </div>
       <div class="tile sky">
         <h2>Federated by design</h2>
@@ -174,54 +175,19 @@ f"""
 
 # ---------------------------------------------------------------- Saho
 PAGES["saho.html"] = ("Saho · Iterrate",
-"Saho is an open, federated learning platform for self-learners, in Malayalam and English, run by the institutions that use it.",
+"Saho is an open, federated learning platform for self-learners, in Malayalam and English, run by the institutions that use it. Its own site is saho.day.",
 f"""
 <div class="wrap narrow">
   <section class="page-top">
     <span class="mark"></span>
     <h1>Saho</h1>
-    <p class="lede">An open learning platform, in Malayalam and English. Saho is a guide and a circle: it helps you work out what to learn next, and finds you people to learn it with.</p>
-    <p class="small">Saho is in development. Its own site, saho.day, is coming soon.</p>
-  </section>
-
-  <section>
-    <span class="mark"></span>
-    <h2>Who it's for</h2>
-    <p>Saho is for people learning on their own, at any stage of life or study. Think of a recent graduate doing part-time work, unsure of what comes next, who wants to explore their world, their skills and what's possible, at their own pace and in their own language.</p>
-    <p class="quote">Saho is not a coaching app. It's for finding a direction, not cramming for a single exam.</p>
-    <p>Institutions can use it too, for their own people. A hospital could run Saho to help its staff keep learning.</p>
-  </section>
-
-  <section>
-    <span class="mark earth"></span>
-    <h2>What it does</h2>
-    <div class="grid two">
-      <div class="tile leaf"><h3>A guide</h3><p>Talk things through in Malayalam, English or a mix of Malayalam and English. The guide suggests paths and next steps. It doesn't lecture.</p></div>
-      <div class="tile sky"><h3>Circles</h3><p>Small groups of learners who meet where they are, online and in person.</p></div>
-      <div class="tile earth"><h3>Paths</h3><p>Learning paths shared between places, with credit to the people who made them.</p></div>
-      <div class="tile leaf"><h3>Your record</h3><p>A record of what you've learned that belongs to you and goes with you.</p></div>
+    <p class="lede">Saho is a guide and a gathering place for people learning on their own, in Malayalam, English or a mix of both.</p>
+    <p>Any institution ({INSTITUTIONS}) can run its own Saho, and every Saho is linked to the others. Learners keep their own record of what they learn, and take it with them.</p>
+    <p>Saho is in development, and a library pilot comes next. It will be released as open-source software.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://saho.day">Visit saho.day</a>
+      <a class="btn" href="https://saho.day/institutions.html">Run Saho at your institution</a>
     </div>
-  </section>
-
-  <section>
-    <span class="mark sky"></span>
-    <h2>Places, not a platform</h2>
-    <p>Any institution ({INSTITUTIONS}) can run its own Saho, which we call a <em>place</em>. Places talk to each other, so a learner at a village library can join a circle at a college nearby.</p>
-    <p>Every learner has one home place for their account and record. They decide what each place can see, and they can take that back. Private conversations with the guide stay in their home place.</p>
-    <p>One Saho can serve every library in a panchayat. A single person can also run their own.</p>
-  </section>
-
-  <section>
-    <span class="mark"></span>
-    <h2>Where it stands</h2>
-    <p>Saho is being built now, and a small pilot comes next. It will be released as open-source software.</p>
-    <p><a href="updates.html">See our updates</a> or <a href="contact.html">get in touch</a> if your institution would like to take part.</p>
-  </section>
-  <section>
-    <span class="mark earth"></span>
-    <h2>The name</h2>
-    <p><em>Saho</em> is a call to work together, named for Sahodaran Ayyappan and his ideals of fraternity and equality.</p>
-    <p><em>saho.day</em> reads as <em>sahoday</em>: rising together.</p>
   </section>
 </div>
 """)
@@ -254,7 +220,7 @@ PAGES["how-we-work.html"] = ("How we work · Iterrate",
   <section>
     <span class="mark earth"></span>
     <h2>How Iterrate is paid</h2>
-    <p>The basic platform is free for learners. Institutions pay for licences, setup, hosting and support.</p>
+    <p>The basic platform is free for learners. Institutions pay us for licences, setup, hosting and support, or run Saho themselves.</p>
     <p>An institution can add its own courses or fees, and learners can pay for premium features beyond what their institution covers.</p>
     <p>We aim to price fairly and put any surplus back into the work.</p>
   </section>
@@ -281,7 +247,7 @@ PAGES["about.html"] = ("About · Iterrate",
   <section>
     <span class="mark"></span>
     <h2>What we do</h2>
-    <p>We build <a href="saho.html">Saho</a>, and we help institutions set it up, run it and look after it. Read <a href="how-we-work.html">how we work</a>.</p>
+    <p>We build <a href="https://saho.day">Saho</a>, and we help institutions set it up, run it and look after it. Read <a href="how-we-work.html">how we work</a>.</p>
   </section>
 
   <section class="strip">
@@ -367,7 +333,7 @@ f"""
   <section class="page-top">
     <span class="mark sky"></span>
     <h1>Get in touch</h1>
-    <p class="lede">Does your institution want to run Saho, or would you like to help build it? We'd like to hear from you.</p>
+    <p class="lede">Write to us about the company, or anything else on this site. For questions about Saho, such as running it at your institution or helping to build it, write to <a href="mailto:hello@saho.day">hello@saho.day</a>.</p>
   </section>
 
   <section>
